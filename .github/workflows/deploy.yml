@@ -1,0 +1,33 @@
+name: Deploy Snip
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Upload frontend to static website
+        uses: Azure/github-actions/storage-blob-static-website@master
+        env:
+          AZURE_STORAGE_ACCOUNT: ${{ secrets.AZURE_STORAGE_ACCOUNT }}
+          PUBLIC_FOLDER: "frontend"
+          INDEX_FILE: "index.html"
+          SHOULD_EMPTY: "true"
+        with:
+          SAS_TOKEN: ${{ secrets.AZURE_STORAGE_SAS_TOKEN }}
+
+  deploy-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Azure Functions
+        uses: Azure/functions-action@v1
+        with:
+          app-name: snip-api-3939
+          package: api
+          publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
