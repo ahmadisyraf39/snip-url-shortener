@@ -1,0 +1,5 @@
+{
+  "name": "snip-api",
+  "version": "1.0.0",
+  "description": "Snip URL shortener - Azure Functions API"
+}
