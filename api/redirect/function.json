@@ -1,0 +1,27 @@
+{
+  "bindings": [
+    {
+      "authLevel": "anonymous",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": ["get"],
+      "route": "{shortCode}"
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    },
+    {
+      "name": "linkDoc",
+      "direction": "in",
+      "type": "cosmosDB",
+      "databaseName": "snipdb",
+      "containerName": "links",
+      "connection": "CosmosDbConnection",
+      "id": "{shortCode}",
+      "partitionKey": "{shortCode}"
+    }
+  ]
+}
