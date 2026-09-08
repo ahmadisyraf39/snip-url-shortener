@@ -1,0 +1,25 @@
+{
+  "bindings": [
+    {
+      "authLevel": "anonymous",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": ["post"],
+      "route": "links"
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    },
+    {
+      "name": "newLink",
+      "direction": "out",
+      "type": "cosmosDB",
+      "databaseName": "snipdb",
+      "containerName": "links",
+      "connection": "CosmosDbConnection"
+    }
+  ]
+}
