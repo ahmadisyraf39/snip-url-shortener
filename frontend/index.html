@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Snip</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+        max-width: 480px;
+        margin: 80px auto;
+        padding: 0 20px;
+        color: #1c2430;
+        background: #f6f3ec;
+      }
+      h1 {
+        font-size: 22px;
+        margin-bottom: 4px;
+      }
+      p.sub {
+        color: #5b6472;
+        font-size: 14px;
+        margin-top: 0;
+      }
+      form {
+        display: flex;
+        gap: 8px;
+        margin: 24px 0;
+      }
+      input[type="url"] {
+        flex: 1;
+        padding: 10px 12px;
+        border: 1px solid #d8d2c2;
+        border-radius: 6px;
+        font-size: 14px;
+      }
+      button {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 6px;
+        background: #b5651d;
+        color: white;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #9a5518;
+      }
+      #result {
+        padding: 12px 14px;
+        border-radius: 6px;
+        font-size: 14px;
+        display: none;
+      }
+      #result.ok {
+        background: #dcefe6;
+        color: #1f5636;
+        display: block;
+      }
+      #result.err {
+        background: #f1e0c9;
+        color: #7a4513;
+        display: block;
+      }
+      #result a {
+        color: inherit;
+        font-weight: 600;
+      }
+      code {
+        background: rgba(0, 0, 0, 0.06);
+        padding: 2px 5px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Snip</h1>
+    <p class="sub">Paste a long URL, get a short one back.</p>
+
+    <form id="shorten-form">
+      <input
+        type="url"
+        id="url-input"
+        placeholder="https://example.com/a/very/long/path"
+        required
+      />
+      <button type="submit">Shorten</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+      const API_BASE_URL =
+        "https://snip-api-3939-ecgdgpegayfhfehh.southeastasia-01.azurewebsites.net";
+
+      const form = document.getElementById("shorten-form");
+      const input = document.getElementById("url-input");
+      const result = document.getElementById("result");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        result.className = "";
+
+        try {
+          const res = await fetch(`${API_BASE_URL}/api/links`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url: input.value }),
+          });
+          if (!res.ok) throw new Error(`Server responded ${res.status}`);
+          const data = await res.json();
+          result.className = "ok";
+          result.innerHTML = `Short link: <a href="${data.shortUrl}">${data.shortUrl}</a>`;
+        } catch (err) {
+          result.className = "err";
+          result.innerHTML = `Couldn't reach the backend yet — expected until Phase 2 is done. (<code>${err.message}</code>)`;
+        }
+      });
+    </script>
+  </body>
+</html>
