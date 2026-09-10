@@ -1,13 +1,14 @@
 @description('Azure region for all resources')
 param location string = resourceGroup().location
 
-@description('Base name used to derive resource names (lowercase letters/numbers only)')
+@description('Base name used to derive resource names (keep it short - 8 characters or fewer - to leave room for Azure Storage\'s 24-character account name limit)')
 param baseName string = 'snipiac'
 
-var storageAccountName = '${baseName}store3939'
-var funcStorageAccountName = '${baseName}funcstore3939'
-var functionAppName = '${baseName}-api-3939'
-var cosmosAccountName = '${baseName}-cosmos-3939'
+var uniqueSuffix = take(uniqueString(resourceGroup().id), 6)
+var storageAccountName = '${baseName}store${uniqueSuffix}'
+var funcStorageAccountName = '${baseName}funcstore${uniqueSuffix}'
+var functionAppName = '${baseName}-api-${uniqueSuffix}'
+var cosmosAccountName = '${baseName}-cosmos-${uniqueSuffix}'
 
 module storage 'modules/storage.bicep' = {
   name: 'storage-deploy'
