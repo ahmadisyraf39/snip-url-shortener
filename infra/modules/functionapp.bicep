@@ -19,6 +19,8 @@ param staticWebsiteUrl string
 @description('Cosmos DB account endpoint, wired in from the cosmos module')
 param cosmosDbAccountEndpoint string
 
+var staticWebsiteOrigin = endsWith(staticWebsiteUrl, '/') ? substring(staticWebsiteUrl, 0, length(staticWebsiteUrl) - 1) : staticWebsiteUrl
+
 resource funcStorage 'Microsoft.Storage/storageAccounts@2023-05-01' = {
   name: funcStorageAccountName
   location: location
@@ -62,7 +64,7 @@ resource functionApp 'Microsoft.Web/sites@2023-01-01' = {
     siteConfig: {
       cors: {
         allowedOrigins: [
-          staticWebsiteUrl
+          staticWebsiteOrigin
           'https://portal.azure.com'
         ]
       }
